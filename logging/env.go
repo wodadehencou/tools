@@ -1,9 +1,11 @@
 package logging
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"path"
+	"time"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -22,16 +24,16 @@ var globalLogger zerolog.Logger
 
 func AutoLogger() zerolog.Logger {
 	var writers []io.Writer
-	// writers = append(writers, zerolog.ConsoleWriter{Out: os.Stderr})
+	writers = append(writers, zerolog.ConsoleWriter{Out: os.Stderr})
 
 	logDir, ok := os.LookupEnv(ENV_KEY)
 	if ok {
 		writers = append(writers,
 			newRollingFile(logDir),
-			zerolog.New(os.Stderr),
+			// zerolog.New(os.Stderr),
 		)
-	} else {
-		writers = append(writers, zerolog.ConsoleWriter{Out: os.Stderr})
+		// } else {
+		// writers = append(writers, zerolog.ConsoleWriter{Out: os.Stderr})
 	}
 
 	mw := io.MultiWriter(writers...)
@@ -46,8 +48,9 @@ func newRollingFile(dir string) io.Writer {
 		return nil
 	}
 
+	now := time.Now().Unix()
 	return &lumberjack.Logger{
-		Filename:   path.Join(dir, "log.txt"),
+		Filename:   path.Join(dir, fmt.Sprintf("log-%d.txt", now)),
 		MaxBackups: MaxBackups, // files
 		MaxSize:    MaxSize,    // megabytes
 		MaxAge:     MaxAge,     // days
