@@ -6,7 +6,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-var loggers []*zerolog.Logger
+var loggers map[string]*zerolog.Logger
 var lock sync.Mutex
 
 func init() {
@@ -15,7 +15,7 @@ func init() {
 	zerolog.LevelFieldName = "l"
 	zerolog.MessageFieldName = "m"
 	globalLogger = AutoLogger()
-	loggers = make([]*zerolog.Logger, 0, 32)
+	loggers = make(map[string]*zerolog.Logger, 32)
 }
 
 func SetLogLevel(level zerolog.Level) {
@@ -26,11 +26,20 @@ func SetLogLevel(level zerolog.Level) {
 	}
 }
 
+func SetPackageLevel(pkg string, level zerolog.Level) {
+	lock.Lock()
+	defer lock.Unlock()
+	lp, ok := loggers[pkg]
+	if ok {
+		*lp = (*lp).Level(level)
+	}
+}
+
 func GetLogger(pkg string) *zerolog.Logger {
 	logger := globalLogger.With().Str("pkg", pkg).Logger()
 	lp := &logger
 	lock.Lock()
 	defer lock.Unlock()
-	loggers = append(loggers, lp)
+	loggers[pkg] = lp
 	return lp
 }
