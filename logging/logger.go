@@ -43,3 +43,23 @@ func GetLogger(pkg string) *zerolog.Logger {
 	loggers[pkg] = lp
 	return lp
 }
+
+func SetLoggerField(ss ...string) {
+	if len(ss)%2 != 0 {
+		globalLogger.Error().Msg("not any pairs of key-value")
+		return
+	}
+	if len(ss) == 0 {
+		return
+	}
+
+	lock.Lock()
+	defer lock.Unlock()
+	for _, lp := range loggers {
+		e := (*lp).With()
+		for i := 0; i < len(ss); i += 2 {
+			e = e.Str(ss[i], ss[i+1])
+		}
+		*lp = e.Logger()
+	}
+}

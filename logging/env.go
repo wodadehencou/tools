@@ -23,23 +23,24 @@ var (
 var globalLogger zerolog.Logger
 
 func AutoLogger() zerolog.Logger {
-	var writers []io.Writer
-	writers = append(writers, zerolog.ConsoleWriter{Out: os.Stderr})
+	return zerolog.New(os.Stderr)
+	// var writers []io.Writer
+	// writers = append(writers, zerolog.ConsoleWriter{Out: os.Stderr})
 
-	logDir, ok := os.LookupEnv(ENV_KEY)
-	if ok {
-		writers = append(writers,
-			newRollingFile(logDir),
-			// zerolog.New(os.Stderr),
-		)
-		// } else {
-		// writers = append(writers, zerolog.ConsoleWriter{Out: os.Stderr})
-	}
+	// logDir, ok := os.LookupEnv(ENV_KEY)
+	// if ok {
+	// 	writers = append(writers,
+	// 		newRollingFile(logDir),
+	// 		// zerolog.New(os.Stderr),
+	// 	)
+	// 	// } else {
+	// 	// writers = append(writers, zerolog.ConsoleWriter{Out: os.Stderr})
+	// }
 
-	mw := io.MultiWriter(writers...)
+	// mw := io.MultiWriter(writers...)
 
-	// zerolog.SetGlobalLevel(zerolog.DebugLevel)
-	return zerolog.New(mw).With().Timestamp().Logger()
+	// // zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	// return zerolog.New(mw).With().Timestamp().Logger()
 }
 
 func newRollingFile(dir string) io.Writer {
