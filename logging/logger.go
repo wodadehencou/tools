@@ -10,10 +10,19 @@ var loggers map[string]*zerolog.Logger
 var lock sync.Mutex
 
 func init() {
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-	zerolog.TimestampFieldName = "t"
-	zerolog.LevelFieldName = "l"
-	zerolog.MessageFieldName = "m"
+	zerolog.TimestampFieldName = "time"
+	zerolog.TimeFieldFormat = "2006-01-02 15:04:05.999999"
+
+	zerolog.LevelFieldName = "level"
+	zerolog.LevelDebugValue = "DEBUG"
+	zerolog.LevelInfoValue = "INFO"
+	zerolog.LevelWarnValue = "WARN"
+	zerolog.LevelErrorValue = "ERROR"
+	zerolog.LevelPanicValue = "PANIC"
+	zerolog.LevelFatalValue = "FATAL"
+
+	zerolog.MessageFieldName = "msg"
+
 	globalLogger = AutoLogger()
 	loggers = make(map[string]*zerolog.Logger, 32)
 }

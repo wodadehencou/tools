@@ -23,7 +23,27 @@ var (
 var globalLogger zerolog.Logger
 
 func AutoLogger() zerolog.Logger {
-	return zerolog.New(os.Stderr)
+	logger := zerolog.New(os.Stderr)
+	event := logger.With().Timestamp()
+
+	taskID, ok := os.LookupEnv("TASK_ID")
+	if ok {
+		event = event.Str("task_id", taskID)
+	}
+
+	appID, ok := os.LookupEnv("APP_ID")
+	if ok {
+		event = event.Str("app_id", appID)
+	}
+
+	nodeID, ok := os.LookupEnv("NODE_ID")
+	if ok {
+		event = event.Str("node_id", nodeID)
+	}
+
+	event = event.Str("platform_id", "9n-mpc")
+
+	return event.Logger()
 	// var writers []io.Writer
 	// writers = append(writers, zerolog.ConsoleWriter{Out: os.Stderr})
 
