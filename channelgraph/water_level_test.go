@@ -36,6 +36,6 @@ func TestMonitorSize(t *testing.T) {
 		}
 	}()
 
-	channelgraph.MonitorSize(chl, stop)
+	channelgraph.MonitorSize("test", chl, stop)
 	time.Sleep(time.Second)
 }

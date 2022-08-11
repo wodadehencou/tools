@@ -9,7 +9,7 @@ import (
 
 var Period = 100 * time.Millisecond
 
-func MonitorSize[T any](chl chan T, close chan any) {
+func MonitorSize[T any](name string, chl chan T, close chan any) {
 	points := make([]float64, 0)
 	// goterm.Clear()
 	// goterm.MoveCursor(0, 0)
@@ -31,5 +31,5 @@ LOG_LOOP:
 			points = append(points, float64(len(chl)*10)/max)
 		}
 	}
-	fmt.Println(asciigraph.Plot(points))
+	fmt.Println(asciigraph.Plot(points, asciigraph.Caption(name)))
 }
